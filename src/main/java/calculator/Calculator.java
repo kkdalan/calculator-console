@@ -16,14 +16,14 @@ public class Calculator {
 		System.out.println("Notes: available operators: { + , - , * , / , ( , ) }");
 		System.out.println("Enter formula or ('exit') to exit.");
 		System.out.println("ex: ( 1+2)* 3/4 ");
+
 		System.out.print(">>> ");
-		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String formula = null;
 		while (!(formula = br.readLine()).equalsIgnoreCase(CMD_EXIT)) {
 			if(!formula.trim().equals("")) {
 				try {
-					Calculator.checkChars(formula);
+					Calculator.checkFormulaPattern(formula);
 					Calculator.checkBrackets(formula);
 					double answer = Calculator.computeFormula(formula);
 					System.out.println("  ans = " + String.valueOf(answer));
@@ -196,11 +196,10 @@ public class Calculator {
 	 * @param formulaStr
 	 * @throws Exception
 	 */
-	private static void checkChars(String formulaStr) throws Exception {
-		if (formulaStr.matches("[a-zA-Z]*")) {
-			throw new Exception("Characters not allowed!");
+	private static void checkFormulaPattern(String formulaStr) throws Exception {
+		if (!formulaStr.matches("^[0-9(\\-][0-9\\+\\-\\*\\/()]*[0-9)]$")) {
+			throw new Exception("Formula not correct!");
 		}
-
 	}
 
 }
