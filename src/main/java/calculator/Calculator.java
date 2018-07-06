@@ -1,11 +1,7 @@
 package calculator;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 public class Calculator {
 
@@ -15,6 +11,10 @@ public class Calculator {
 		Calculator.start();
 	}
 
+	/**
+	 * start calculator console
+	 * @throws Exception
+	 */
 	private static void start() throws Exception {
 		System.out.println("=== Java Calculator ===");
 		System.out.println("Notes: available operators: { + , - , * , / , ( , ) }");
@@ -27,9 +27,9 @@ public class Calculator {
 		while (!(formula = br.readLine()).equalsIgnoreCase(CMD_EXIT)) {
 			if(!formula.trim().equals("")) {
 				try {
-					Calculator.checkFormulaPattern(formula);
-					Calculator.checkBrackets(formula);
-					double answer = Calculator.computeFormula(formula);
+					checkFormulaPattern(formula);
+					checkBrackets(formula);
+					double answer = computeFormula(formula);
 					System.out.println("  ans = " + String.valueOf(answer));
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
@@ -42,7 +42,17 @@ public class Calculator {
 	}
 
 	/**
-	 * recursively compute formula value
+	 * ============================================================
+	 * Recursively compute formula
+	 * 
+	 * 1. Find brackets part in formula and compute value 
+	 *    to replace the brackets part until no brackets found.
+	 * 2. Find multiply and divide operation in formula 
+	 *    and compute value to replace the multiply/divide part 
+	 *    until no multiply/divide operation found.
+	 * 3. The formula will contain plus and minus operation only, 
+	 *    compute the plus/minus operation to find the answer.
+	 * ============================================================
 	 * @param formula
 	 * @return
 	 * @throws Exception 
@@ -59,6 +69,11 @@ public class Calculator {
 		}
 	}
 
+	/**
+	 * throws exception as formula has brackets outside, ex: (2/3)
+	 * @param formula
+	 * @throws Exception
+	 */
 	protected static void throwExceptionAsBrachetsOutside(String formula) throws Exception {
 		if (formula.substring(0, 1).equals("(")
 				&& formula.substring(formula.length() - 1, formula.length()).equals(")")) {
@@ -92,7 +107,7 @@ public class Calculator {
 	}
 
 	/**
-	 * simplify brackets and evaluate
+	 * simplify brackets and evaluate value inside
 	 * @param formula
 	 * @return
 	 */
@@ -106,7 +121,7 @@ public class Calculator {
 	}
 
 	/**
-	 * check if brackets exists in formula
+	 * check if formula contains '(' or ')'
 	 * @param formula
 	 * @return
 	 */
@@ -114,6 +129,11 @@ public class Calculator {
 		return formula.contains("(") && formula.contains(")");
 	}
 	
+	/**
+	 * check if formula contains '*' or '/'
+	 * @param formula
+	 * @return
+	 */
 	private static boolean hasMultiplyOrDivide(String formula) {
 		return formula.contains("*") || formula.contains("/");
 	}
@@ -145,7 +165,11 @@ public class Calculator {
 		}
 	}
 	
-	
+	/**
+	 * simplify formula by evaluating multiply and divide operation part
+	 * @param formula
+	 * @return
+	 */
 	protected static String simplifyMultiplyAndDivide(String formula) {
 //		System.out.println("formula = " + formula);
 		
@@ -196,6 +220,11 @@ public class Calculator {
 		return formula;
 	}
 
+	/**
+	 * compute multiply and divide part value
+	 * @param formula
+	 * @return
+	 */
 	private static double computeMultiplyAndDivideValue(String formula) {
 		String formulaStr = formula.replace(" ", "");
 		String[] numbers = formulaStr.split("[\\*\\/]");
@@ -216,6 +245,11 @@ public class Calculator {
 		return answer;
 	}
 	
+	/**
+	 * compute plus and minus operation part value
+	 * @param formula
+	 * @return
+	 */
 	private static double computePlusAndMinusValue(String formula) {
 		String formulaStr = formula.replace(" ", "")
 								   .replace("++", "+")
