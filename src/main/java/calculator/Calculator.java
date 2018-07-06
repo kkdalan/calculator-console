@@ -56,9 +56,11 @@ public class Calculator {
 	 * 
 	 * 1. Find brackets part in formula and compute value 
 	 *    to replace the brackets part until no brackets found.
+	 *    
 	 * 2. Find multiply and divide operation in formula 
 	 *    and compute value to replace the multiply/divide part 
 	 *    until no multiply/divide operation found.
+	 *    
 	 * 3. The formula will contain plus and minus operation only, 
 	 *    compute the plus/minus operation to find the answer.
 	 * ============================================================
