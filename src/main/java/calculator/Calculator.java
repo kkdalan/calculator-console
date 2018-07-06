@@ -11,35 +11,11 @@ public class Calculator {
 
 	private static final String CMD_EXIT = "exit";
 
-	public static void main(String[] args) throws IOException {
-		Calculator.test();
-//		Calculator.start();
+	public static void main(String[] args) throws Exception {
+		Calculator.start();
 	}
 
-	private static void test() {
-		//		System.out.println(simplifyMultiplyAndDivide("1-11+22-10+3"));
-		//		System.out.println(findMultiplyAndDivide("1-11+22*-10+3"));
-		//	    System.out.println(computeMultiplyAndDivideValue("2/-2/-2"));
-		//		System.out.println(computePlusAndMinusValue("1+2-3++2--1+-3-+1--5"));
-		
-		
-//				System.out.println(computeFormulaValue("2/-4+1"));
-//				System.out.println(computeFormulaValue("1+2/-4"));
-//				System.out.println(computeFormulaValue("1+2/-4+1"));
-//				System.out.println(computeFormulaValue("1-2/-4"));
-//				System.out.println(computeFormulaValue("2/-4-1"));
-//				System.out.println(computeFormulaValue("-2/-4"));
-				System.out.println(computeFormulaValue("1+4/2"));
-
-//				System.out.println(computeFormulaValue("-2/-4/-1"));
-//				System.out.println(computeFormulaValue("-2/-4/+1"));
-//				System.out.println(computeFormulaValue("-1/-2/-4"));
-//				System.out.println(computeFormulaValue("1-1/-2/-4+1"));
-//				System.out.println(computeFormulaValue("-1/-2/-4+1"));
-				System.out.println(computeFormulaValue("1-1/-2/-4"));
-	}
-
-	private static void start() throws IOException {
+	private static void start() throws Exception {
 		System.out.println("=== Java Calculator ===");
 		System.out.println("Notes: available operators: { + , - , * , / , ( , ) }");
 		System.out.println("Enter formula or ('exit') to exit.");
@@ -69,18 +45,32 @@ public class Calculator {
 	 * recursively compute formula value
 	 * @param formula
 	 * @return
+	 * @throws Exception 
 	 */
-	public static double computeFormula(String formula) {
+	public static double computeFormula(String formula) throws Exception {
 		formula = cleanFormula(formula);
 		if (hasBrackets(formula)) {
 			String newFormula = simplifyBrackets(formula);
 			return computeFormula(newFormula);
 		} else {
 //			return computeValue(formula);
+			throwExceptionAsBrachetsOutside(formula);
 			return computeFormulaValue(formula);
 		}
 	}
+
+	protected static void throwExceptionAsBrachetsOutside(String formula) throws Exception {
+		if (formula.substring(0, 1).equals("(")
+				&& formula.substring(formula.length() - 1, formula.length()).equals(")")) {
+			throw new Exception("Formula with ( and ) is not allowed!");
+		}
+	}
 	
+	/**
+	 * compute formula value without brackets
+	 * @param formula
+	 * @return
+	 */
 	public static double computeFormulaValue(String formula) {
 		formula = cleanFormula(formula);
 		if (hasMultiplyOrDivide(formula)) {
@@ -110,7 +100,7 @@ public class Calculator {
 		String formulaStr = formula.replace(" ", "");
 		formulaStr = formulaStr.substring(0, formulaStr.indexOf(")")+1);
 		formulaStr = formulaStr.substring(formulaStr.lastIndexOf("("));
-		Double value = computeValue(formulaStr);
+		Double value = computeFormulaValue(formulaStr.replace("(", "").replace(")", ""));
 		formula = formula.replace(formulaStr, value.toString());
 		return formula;
 	}
@@ -128,97 +118,6 @@ public class Calculator {
 		return formula.contains("*") || formula.contains("/");
 	}
 
-	/**
-	 * compute formula value without brackets
-	 * @param formula
-	 * @return
-	 */
-	public static double computeValue(String formula) {
-		String formulaStr = formula.replace(" ", "").replace("(", "").replace(")", "");
-		String[] numbers = formulaStr.split("[\\+\\-\\*\\/]");
-		String[] symbols = formulaStr.replaceAll("[0-9.]", "").split("");
-
-		//處理負號相乘相除
-		boolean hasMinus = false;
-		int j = 1;
-		for (; j < numbers.length;) {
-			if (numbers[j].equals("") && symbols[j].equals("-")) {
-				if (symbols[j - 1].equals("/") || symbols[j - 1].equals("*")) {
-					numbers = ArrayUtils.remove(numbers, j);
-					symbols = ArrayUtils.remove(symbols, j);
-					hasMinus = !hasMinus;
-					j--;
-				}
-			}
-			if (!Arrays.asList(numbers).contains("")) {
-				j++;
-				break;
-			} else {
-				j++;
-			}
-		}
-		if(hasMinus) {
-			numbers = ArrayUtils.add(numbers, 0 , "0");
-			symbols = ArrayUtils.add(symbols, 0 , "-");
-		}
-
-		//先乘除
-		for (int i = 1; i < numbers.length;) {
-			String sym = symbols[i - 1];
-			if (sym.equals("*")) {
-				Double mply = Double.valueOf(numbers[i - 1]) * Double.valueOf(numbers[i]);
-				numbers = ArrayUtils.remove(numbers, i - 1);
-				numbers = ArrayUtils.remove(numbers, i - 1);
-				symbols = ArrayUtils.remove(symbols, i - 1);
-				numbers = ArrayUtils.add(numbers, i - 1, mply.toString());
-			}
-			
-			if (sym.equals("/")) {
-				Double divd = Double.valueOf(numbers[i - 1]) / Double.valueOf(numbers[i]);
-				numbers = ArrayUtils.remove(numbers, i - 1);
-				numbers = ArrayUtils.remove(numbers, i - 1);
-				symbols = ArrayUtils.remove(symbols, i - 1);
-				numbers = ArrayUtils.add(numbers, i - 1, divd.toString());
-			}
-			if (sym.equals("+")) {
-				i++;
-			}
-			if (sym.equals("-")) {
-				i++;
-			}
-			if (!Arrays.asList(symbols).contains("*") && !Arrays.asList(symbols).contains("/")) {
-				break;
-			}
-		}
-
-		//後加減
-		if (numbers[0].equals("") && symbols[0].equals("-")) {
-			numbers[0] = "0";
-		}
-		Double answer = Double.valueOf(numbers[0]);
-		for (int i = 1; i < numbers.length; i++) {
-			String sym = symbols[i - 1];
-			if (sym.equals("+")) {
-				if(numbers[i].equals("") && symbols[i].equals("-")) {
-					answer -= Double.valueOf(numbers[i+1]);
-					i++;
-				}else {
-					answer += Double.valueOf(numbers[i]);
-				}
-			}
-			if (sym.equals("-")) {
-				if(numbers[i].equals("") && symbols[i].equals("-")) {
-					answer += Double.valueOf(numbers[i+1]);
-					i++;
-				}else {
-					answer -= Double.valueOf(numbers[i]);
-				}
-			}
-		}
-		return answer;
-	}
-
-	
 	/**
 	 * check if brackets enclosed
 	 * @param formula
@@ -247,7 +146,7 @@ public class Calculator {
 	}
 	
 	
-	private static String simplifyMultiplyAndDivide(String formula) {
+	protected static String simplifyMultiplyAndDivide(String formula) {
 //		System.out.println("formula = " + formula);
 		
 		String formulaStr = formula.replace(" ", "");
@@ -279,14 +178,18 @@ public class Calculator {
 		int endIndex = formulaStr.length();
 		endIndex = (addIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + addIndex2);
 		endIndex = (minusIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + minusIndex2);
-		String subStr = formulaStr.substring(beginIndex + 1, endIndex);
+		String subStr = formulaStr.substring(beginIndex , endIndex);
+		subStr = subStr.substring(0,1).equals("+")? subStr.substring(1):subStr;
+		subStr = subStr.substring(0,1).equals("-")? subStr.substring(1):subStr;
 //		System.out.println("sub string = " + subStr);
 		
 		subStr = subStr.replace("m", "*-").replace("d", "/-");
 //		System.out.println("====> "+subStr);
+		
 		if (!subStr.equals("")) {
 			Double value = computeMultiplyAndDivideValue(subStr);
-			formula = formulaStr.replace("m", "*-").replace("d", "/-").replace(subStr, value.toString());
+			formulaStr = formulaStr.replace("m", "*-").replace("d", "/-");
+			formula = formulaStr.replace(subStr, value.toString());
 		}
 //		System.out.println("simplified = "+formula);
 		
