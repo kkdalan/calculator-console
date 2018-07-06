@@ -11,9 +11,7 @@ public class CalculatorTest extends TestCase {
 
 	@Test
 	public void testComputeFormula() throws Exception {
-
 		System.out.println("---- Test computeFormula() ----");
-
 		Assert.assertEquals(3.0, printComputeFormula("1+4/2"), DELTA_ERROR);
 		Assert.assertEquals(-1.0, printComputeFormula("1-4/2"), DELTA_ERROR);
 		Assert.assertEquals(3.0, printComputeFormula("4/2+1"), DELTA_ERROR);
@@ -61,6 +59,40 @@ public class CalculatorTest extends TestCase {
 		Assert.assertEquals(Double.NaN, printComputeFormula("0/(1-1)-3"), DELTA_ERROR);
 	}
 
+	
+	@Test
+	public void testSimplifyBrackets() {
+		System.out.println("---- Test simplifyBrackets() ----");
+		Assert.assertEquals("1.5+1", printSimplifyBrackets("(2/4+1)+1"));
+		Assert.assertEquals("1+1.5", printSimplifyBrackets("1+(2/4+1)"));
+		Assert.assertEquals("1.5*2", printSimplifyBrackets("(2/4+1)*2"));
+		Assert.assertEquals("2*1.5", printSimplifyBrackets("2*(2/4+1)"));
+		Assert.assertEquals("2/1.5", printSimplifyBrackets("2/(2/4+1)"));
+		Assert.assertEquals("1.5/2", printSimplifyBrackets("(2/4+1)/2"));
+		
+		Assert.assertEquals("1.5-1", printSimplifyBrackets("(2/4+1)-1"));
+		Assert.assertEquals("1-1.5", printSimplifyBrackets("1-(2/4+1)"));
+		Assert.assertEquals("1.5*-2", printSimplifyBrackets("(2/4+1)*-2"));
+		Assert.assertEquals("-2*1.5", printSimplifyBrackets("-2*(2/4+1)"));
+		Assert.assertEquals("-2/1.5", printSimplifyBrackets("-2/(2/4+1)"));
+		Assert.assertEquals("1.5/-2", printSimplifyBrackets("(2/4+1)/-2"));
+		
+		Assert.assertEquals("1.5+(1-3)", printSimplifyBrackets("(2/4+1)+(1-3)"));
+		Assert.assertEquals("-2.0+(2/4+1)", printSimplifyBrackets("(1-3)+(2/4+1)"));
+		Assert.assertEquals("1.5*(1-3)", printSimplifyBrackets("(2/4+1)*(1-3)"));
+		Assert.assertEquals("-2.0*(2/4+1)", printSimplifyBrackets("(1-3)*(2/4+1)"));
+		Assert.assertEquals("-2.0/(2/4+1)", printSimplifyBrackets("(1-3)/(2/4+1)"));
+		Assert.assertEquals("1.5/(1-3)", printSimplifyBrackets("(2/4+1)/(1-3)"));
+		
+		Assert.assertEquals("1.5+(1-3)*(1-2*3)", printSimplifyBrackets("(2/4+1)+(1-3)*(1-2*3)"));
+		Assert.assertEquals("-5.0*(1-3)+(2/4+1)", printSimplifyBrackets("(1-2*3)*(1-3)+(2/4+1)"));
+		Assert.assertEquals("1.5*(1-3)+(1-2*3)", printSimplifyBrackets("(2/4+1)*(1-3)+(1-2*3)"));
+		Assert.assertEquals("-5.0+(1-3)*(2/4+1)", printSimplifyBrackets("(1-2*3)+(1-3)*(2/4+1)"));
+		Assert.assertEquals("-2.0/(2/4+1)-(1-2*3)", printSimplifyBrackets("(1-3)/(2/4+1)-(1-2*3)"));
+		Assert.assertEquals("-5.0-(2/4+1)/(1-3)", printSimplifyBrackets("(1-2*3)-(2/4+1)/(1-3)"));
+	}
+
+	
 	@Test
 	public void testComputeFormulaValue() {
 		System.out.println("---- Test computeFormulaValue() ----");
@@ -92,6 +124,11 @@ public class CalculatorTest extends TestCase {
 		Assert.assertFalse(hasExceptionAsComputeFormulaValueWithBracketsOutside("-8 / -4"));
 		Assert.assertTrue(hasExceptionAsComputeFormulaValueWithBracketsOutside("( 8 / 4)"));
 		Assert.assertTrue(hasExceptionAsComputeFormulaValueWithBracketsOutside("( 8 / -4)"));
+		
+		Assert.assertFalse(hasExceptionAsComputeFormulaValueWithBracketsOutside("1+( 8 / -4)"));
+		Assert.assertFalse(hasExceptionAsComputeFormulaValueWithBracketsOutside("( 8 / -4)+1"));
+		Assert.assertTrue(hasExceptionAsComputeFormulaValueWithBracketsOutside("( 8 / 4)+(1-2)"));
+		Assert.assertTrue(hasExceptionAsComputeFormulaValueWithBracketsOutside("(1-2)+( 8 / -4)"));
 	}
 
 	private boolean hasExceptionAsComputeFormulaValueWithBracketsOutside(String formula) {
@@ -120,6 +157,12 @@ public class CalculatorTest extends TestCase {
 
 	private String printSimplifyMultiplyAndDivide(String formula) {
 		String newFormula = Calculator.simplifyMultiplyAndDivide(formula);
+		System.out.println(">>> " + formula + " => " + newFormula);
+		return newFormula;
+	}
+	
+	private String printSimplifyBrackets(String formula) {
+		String newFormula = Calculator.simplifyBrackets(formula);
 		System.out.println(">>> " + formula + " => " + newFormula);
 		return newFormula;
 	}

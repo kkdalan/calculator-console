@@ -70,7 +70,7 @@ public class Calculator {
 	 */
 	public static double computeFormula(String formula) throws Exception {
 		formula = cleanFormula(formula);
-		if (hasBrackets(formula)) {
+		if (hasBracketsPair(formula)) {
 			String newFormula = simplifyBrackets(formula);
 			return computeFormula(newFormula);
 		} else {
@@ -87,7 +87,7 @@ public class Calculator {
 	protected static void throwExceptionAsBrachetsOutside(String formula) throws Exception {
 		if (formula.substring(0, 1).equals("(")
 				&& formula.substring(formula.length() - 1, formula.length()).equals(")")) {
-			throw new Exception("Formula with ( and ) is not allowed!");
+			throw new Exception("formula with ( and ) is not allowed!");
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class Calculator {
 	 * @param formula
 	 * @return
 	 */
-	private static String simplifyBrackets(String formula) {
+	protected static String simplifyBrackets(String formula) {
 		String formulaStr = formula.replace(" ", "");
 		formulaStr = formulaStr.substring(0, formulaStr.indexOf(")")+1);
 		formulaStr = formulaStr.substring(formulaStr.lastIndexOf("("));
@@ -136,7 +136,7 @@ public class Calculator {
 	 * @param formula
 	 * @return
 	 */
-	private static boolean hasBrackets(String formula) {
+	private static boolean hasBracketsPair(String formula) {
 		return formula.contains("(") && formula.contains(")");
 	}
 	
@@ -160,7 +160,7 @@ public class Calculator {
 			formulaStr = formulaStr.replace("()", "");
 		}
 		if (formulaStr.contains("(") || formulaStr.contains(")")) {
-			throw new Exception("Brackets pair not complete!");
+			throw new Exception("brackets pair not complete!");
 		}
 	}
 
@@ -172,7 +172,7 @@ public class Calculator {
 	private static void checkFormulaPattern(String formulaStr) throws Exception {
 		formulaStr = cleanFormula(formulaStr);
 		if (!formulaStr.matches("^[0-9(\\-][0-9\\+\\-\\*\\/()]*[0-9)]$")) {
-			throw new Exception("Formula string not correct!");
+			throw new Exception("formula string not correct!");
 		}
 	}
 	
