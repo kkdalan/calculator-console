@@ -15,7 +15,7 @@ public class Calculator {
 	 * start calculator console
 	 * @throws Exception
 	 */
-	private static void start() throws Exception {
+	public static void start() throws Exception {
 		System.out.println("=== Java Calculator ===");
 		System.out.println("Notes: available operators: { + , - , * , / , ( , ) }");
 		System.out.println("Enter formula or ('exit') to exit.");
@@ -27,8 +27,7 @@ public class Calculator {
 		while (!(formula = br.readLine()).equalsIgnoreCase(CMD_EXIT)) {
 			if(!formula.trim().equals("")) {
 				try {
-					checkFormulaPattern(formula);
-					checkBrackets(formula);
+					validateFormula(formula);
 					double answer = computeFormula(formula);
 					System.out.println("  ans = " + String.valueOf(answer));
 				} catch (Exception e) {
@@ -39,6 +38,16 @@ public class Calculator {
 			System.out.print(">>> ");
 		}
 		System.out.println("Bye!");
+	}
+
+	/**
+	 * validate formula pattern, brackets ... etc.
+	 * @param formula
+	 * @throws Exception
+	 */
+	private static void validateFormula(String formula) throws Exception {
+		checkFormulaPattern(formula);
+		checkFormulaBrackets(formula);
 	}
 
 	/**
@@ -143,7 +152,7 @@ public class Calculator {
 	 * @param formula
 	 * @throws Exception
 	 */
-	private static void checkBrackets(String formulaStr) throws Exception {
+	private static void checkFormulaBrackets(String formulaStr) throws Exception {
 		formulaStr = cleanFormula(formulaStr).replaceAll("[0-9.\\+\\-\\*\\/]", "");
 		while (formulaStr.contains("()")) {
 			formulaStr = formulaStr.replace("()", "");

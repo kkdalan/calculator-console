@@ -45,6 +45,10 @@ public class CalculatorTest extends TestCase {
 		Assert.assertEquals(-48.0, printComputeFormula("-2 * ( 8 / ( 3 -8 / 3))"), DELTA_ERROR);
 		Assert.assertEquals(16.0, printComputeFormula("-2 * ( 8 / ( 3 -8 / 3) / - 3)"), DELTA_ERROR);
 
+		Assert.assertEquals(-14, printComputeFormula("1*(-1)+2*(-2)+3*(-3)"), DELTA_ERROR);
+		Assert.assertEquals(-14, printComputeFormula("1*-1+2*-2+3*-3"), DELTA_ERROR);
+		Assert.assertEquals(14, printComputeFormula("1*1+2*2+3*3"), DELTA_ERROR);
+		
 		Assert.assertEquals(Double.POSITIVE_INFINITY, printComputeFormula("2/0"), DELTA_ERROR);
 		Assert.assertEquals(Double.NEGATIVE_INFINITY, printComputeFormula("-2/0"), DELTA_ERROR);
 		Assert.assertEquals(Double.POSITIVE_INFINITY, printComputeFormula("2/(1-1)"), DELTA_ERROR);
