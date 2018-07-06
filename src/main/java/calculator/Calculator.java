@@ -23,7 +23,7 @@ public class Calculator {
 
 		System.out.print(">>> ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String formula = null;
+		String formula = "";
 		while (!(formula = br.readLine()).equalsIgnoreCase(CMD_EXIT)) {
 			if(!formula.trim().equals("")) {
 				try {
@@ -74,7 +74,6 @@ public class Calculator {
 			String newFormula = simplifyBrackets(formula);
 			return computeFormula(newFormula);
 		} else {
-//			return computeValue(formula);
 			throwExceptionAsBrachetsOutside(formula);
 			return computeFormulaValue(formula);
 		}
@@ -126,6 +125,7 @@ public class Calculator {
 		String formulaStr = formula.replace(" ", "");
 		formulaStr = formulaStr.substring(0, formulaStr.indexOf(")")+1);
 		formulaStr = formulaStr.substring(formulaStr.lastIndexOf("("));
+		
 		Double value = computeFormulaValue(formulaStr.replace("(", "").replace(")", ""));
 		formula = formula.replace(formulaStr, value.toString());
 		return formula;
@@ -160,7 +160,7 @@ public class Calculator {
 			formulaStr = formulaStr.replace("()", "");
 		}
 		if (formulaStr.contains("(") || formulaStr.contains(")")) {
-			throw new Exception("Brackets pair not correct!");
+			throw new Exception("Brackets pair not complete!");
 		}
 	}
 
@@ -172,7 +172,7 @@ public class Calculator {
 	private static void checkFormulaPattern(String formulaStr) throws Exception {
 		formulaStr = cleanFormula(formulaStr);
 		if (!formulaStr.matches("^[0-9(\\-][0-9\\+\\-\\*\\/()]*[0-9)]$")) {
-			throw new Exception("Formula not correct!");
+			throw new Exception("Formula string not correct!");
 		}
 	}
 	
