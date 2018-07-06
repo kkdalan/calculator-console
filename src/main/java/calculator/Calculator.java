@@ -32,6 +32,7 @@ public class Calculator {
 //				System.out.println(computeFormulaValue("-2/-4/-1"));
 //				System.out.println(computeFormulaValue("-2/-4/+1"));
 //				System.out.println(computeFormulaValue("-1/-2/-4"));
+				System.out.println(computeFormulaValue("1-1/-2/-4+1"));
 	}
 
 	private static void execute() throws IOException {
@@ -243,90 +244,47 @@ public class Calculator {
 	
 	
 	private static String simplifyMultiplyAndDivide(String formula) {
+		System.out.println("formula = " + formula);
+		
 		String formulaStr = formula.replace(" ", "");
-		System.out.println(formula);
+		formulaStr = formulaStr.replace("*-", "m").replace("/-", "d");
+		System.out.println("====> " + formulaStr);
 		
 		int mplyIndex = formulaStr.indexOf("*");
 		int divdIndex = formulaStr.indexOf("/");
+		int mIndex = formulaStr.indexOf("m");
+		int dIndex = formulaStr.indexOf("d");
 		int keyIndex = 0;
-		if(mplyIndex != -1 && divdIndex != -1) {
-			keyIndex = Math.min(mplyIndex, divdIndex);
-		}else if(mplyIndex != -1 && divdIndex == -1) {
-			keyIndex = mplyIndex;
-		}else if(mplyIndex == -1 && divdIndex != -1) {
-			keyIndex = divdIndex;
-		}else {
-			keyIndex = 0;
-		}
+		keyIndex = (mplyIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mplyIndex) : mplyIndex);
+		keyIndex = (divdIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, divdIndex) : divdIndex);
+		keyIndex = (mIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mIndex) : mIndex);
+		keyIndex = (dIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, dIndex) : dIndex);
 		String leftStr = formulaStr.substring(0, keyIndex);
-		System.out.println(leftStr);
+		System.out.println("left string = " + leftStr);
 		
 		int addIndex = leftStr.lastIndexOf("+");
 		int minusIndex = leftStr.lastIndexOf("-");
 		int beginIndex = 0;
-		if(addIndex != -1 && minusIndex != -1) {
-			beginIndex = Math.max(addIndex, minusIndex);
-		}else if(addIndex != -1 && minusIndex == -1) {
-			beginIndex = addIndex;
-		}else if(addIndex == -1 && minusIndex != -1) {
-			beginIndex = minusIndex;
-		}else {
-			beginIndex = 0;
-		}
-		
+		beginIndex = (addIndex == -1) ? beginIndex : addIndex;
+		beginIndex = (minusIndex == -1) ? beginIndex : Math.max(beginIndex, minusIndex);
 		String rightStr = formulaStr.substring(keyIndex+1,formulaStr.length());
-		System.out.println(rightStr);
-		
-
-		int mplyIndex2 = rightStr.lastIndexOf("*");
-		int divdIndex2 = rightStr.lastIndexOf("/");
-		int keyIndex2 = 0;
-		if(mplyIndex2 != -1 && divdIndex2 != -1) {
-			keyIndex2 = Math.min(mplyIndex2, divdIndex2);
-		}else if(mplyIndex2 != -1 && divdIndex2 == -1) {
-			keyIndex2 = mplyIndex2;
-		}else if(mplyIndex2 == -1 && divdIndex2 != -1) {
-			keyIndex2 = divdIndex2;
-		}else {
-			keyIndex2 = 0;
-		}
-		
-		int endIndex = keyIndex + keyIndex2 + 1;
-		String y =rightStr.substring(keyIndex2 + 1 ,keyIndex2 + 2);
-		if(y.equals("-")) {
-			rightStr = rightStr.substring(keyIndex2+2,rightStr.length());
-			endIndex++;
-		}else{
-			rightStr = rightStr.substring(keyIndex2+1,rightStr.length());
-		}
-		System.out.println(rightStr);
-		
-		
+		System.out.println("right string = " + rightStr);
 		
 		int addIndex2 = rightStr.indexOf("+");
 		int minusIndex2 = rightStr.indexOf("-");
-		if(addIndex2 != -1 && minusIndex2 != -1) {
-			endIndex += Math.min(addIndex2, minusIndex2);
-		}else if(addIndex2 != -1 && minusIndex2 == -1) {
-			endIndex += addIndex2;
-		}else if(addIndex2 == -1 && minusIndex2 != -1) {
-			endIndex += minusIndex2;
-		}else {
-			endIndex += 1;
-		}
-
-		if(beginIndex > 0) {
-			formulaStr = formulaStr.substring(beginIndex + 1, endIndex);
-		}else {
-			formulaStr = formulaStr.substring(beginIndex , endIndex + 1);
-		}
-		System.out.println(formulaStr);
+		int endIndex = formulaStr.length();
+		endIndex = (addIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + addIndex2);
+		endIndex = (minusIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + minusIndex2);
+		String subStr = formulaStr.substring(beginIndex, endIndex);
+		System.out.println("sub string = " + subStr);
 		
-		if (!formulaStr.equals("-1")) {
-			Double value = computeMultiplyAndDivideValue(formulaStr);
-			formula = formula.replace(formulaStr, value.toString());
+		subStr = subStr.replace("m", "*-").replace("d", "/-");
+		System.out.println("====> "+subStr);
+		if (!subStr.equals("")) {
+			Double value = computeMultiplyAndDivideValue(subStr);
+			formula = formulaStr.replace("m", "*-").replace("d", "/-").replace(subStr, value.toString());
 		}
-		System.out.println(formula);
+		System.out.println("simplified = "+formula);
 		
 		return formula;
 	}
