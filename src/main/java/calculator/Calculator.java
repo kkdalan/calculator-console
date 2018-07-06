@@ -12,8 +12,8 @@ public class Calculator {
 	private static final String CMD_EXIT = "exit";
 
 	public static void main(String[] args) throws IOException {
-		test();
-//		execute();
+		Calculator.test();
+//		Calculator.start();
 	}
 
 	private static void test() {
@@ -22,20 +22,24 @@ public class Calculator {
 		//	    System.out.println(computeMultiplyAndDivideValue("2/-2/-2"));
 		//		System.out.println(computePlusAndMinusValue("1+2-3++2--1+-3-+1--5"));
 		
+		
 //				System.out.println(computeFormulaValue("2/-4+1"));
 //				System.out.println(computeFormulaValue("1+2/-4"));
 //				System.out.println(computeFormulaValue("1+2/-4+1"));
 //				System.out.println(computeFormulaValue("1-2/-4"));
 //				System.out.println(computeFormulaValue("2/-4-1"));
 //				System.out.println(computeFormulaValue("-2/-4"));
+				System.out.println(computeFormulaValue("1+4/2"));
 
 //				System.out.println(computeFormulaValue("-2/-4/-1"));
 //				System.out.println(computeFormulaValue("-2/-4/+1"));
 //				System.out.println(computeFormulaValue("-1/-2/-4"));
-				System.out.println(computeFormulaValue("1-1/-2/-4+1"));
+//				System.out.println(computeFormulaValue("1-1/-2/-4+1"));
+//				System.out.println(computeFormulaValue("-1/-2/-4+1"));
+				System.out.println(computeFormulaValue("1-1/-2/-4"));
 	}
 
-	private static void execute() throws IOException {
+	private static void start() throws IOException {
 		System.out.println("=== Java Calculator ===");
 		System.out.println("Notes: available operators: { + , - , * , / , ( , ) }");
 		System.out.println("Enter formula or ('exit') to exit.");
@@ -244,11 +248,11 @@ public class Calculator {
 	
 	
 	private static String simplifyMultiplyAndDivide(String formula) {
-		System.out.println("formula = " + formula);
+//		System.out.println("formula = " + formula);
 		
 		String formulaStr = formula.replace(" ", "");
 		formulaStr = formulaStr.replace("*-", "m").replace("/-", "d");
-		System.out.println("====> " + formulaStr);
+//		System.out.println("====> " + formulaStr);
 		
 		int mplyIndex = formulaStr.indexOf("*");
 		int divdIndex = formulaStr.indexOf("/");
@@ -260,7 +264,7 @@ public class Calculator {
 		keyIndex = (mIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mIndex) : mIndex);
 		keyIndex = (dIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, dIndex) : dIndex);
 		String leftStr = formulaStr.substring(0, keyIndex);
-		System.out.println("left string = " + leftStr);
+//		System.out.println("left string = " + leftStr);
 		
 		int addIndex = leftStr.lastIndexOf("+");
 		int minusIndex = leftStr.lastIndexOf("-");
@@ -268,23 +272,23 @@ public class Calculator {
 		beginIndex = (addIndex == -1) ? beginIndex : addIndex;
 		beginIndex = (minusIndex == -1) ? beginIndex : Math.max(beginIndex, minusIndex);
 		String rightStr = formulaStr.substring(keyIndex+1,formulaStr.length());
-		System.out.println("right string = " + rightStr);
+//		System.out.println("right string = " + rightStr);
 		
 		int addIndex2 = rightStr.indexOf("+");
 		int minusIndex2 = rightStr.indexOf("-");
 		int endIndex = formulaStr.length();
 		endIndex = (addIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + addIndex2);
 		endIndex = (minusIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + minusIndex2);
-		String subStr = formulaStr.substring(beginIndex, endIndex);
-		System.out.println("sub string = " + subStr);
+		String subStr = formulaStr.substring(beginIndex + 1, endIndex);
+//		System.out.println("sub string = " + subStr);
 		
 		subStr = subStr.replace("m", "*-").replace("d", "/-");
-		System.out.println("====> "+subStr);
+//		System.out.println("====> "+subStr);
 		if (!subStr.equals("")) {
 			Double value = computeMultiplyAndDivideValue(subStr);
 			formula = formulaStr.replace("m", "*-").replace("d", "/-").replace(subStr, value.toString());
 		}
-		System.out.println("simplified = "+formula);
+//		System.out.println("simplified = "+formula);
 		
 		return formula;
 	}
@@ -292,10 +296,11 @@ public class Calculator {
 	private static double computeMultiplyAndDivideValue(String formula) {
 		String formulaStr = formula.replace(" ", "");
 		String[] numbers = formulaStr.split("[\\*\\/]");
-		String[] symbols = formulaStr.replaceAll("[0-9.\\-]", "").split("");
+		String[] symbols = formulaStr.replaceAll("[0-9.\\-+]", "").split("");
 		
 		double answer = Double.valueOf(numbers[0]);
 		for (int i = 1; i < numbers.length; i++) {
+
 			String sym = symbols[i - 1];
 			if (sym.equals("*")) {
 				answer *= Double.valueOf(numbers[i]);
