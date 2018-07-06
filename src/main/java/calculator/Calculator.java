@@ -45,7 +45,7 @@ public class Calculator {
 	 * @param formula
 	 * @throws Exception
 	 */
-	private static void validateFormula(String formula) throws Exception {
+	protected static void validateFormula(String formula) throws Exception {
 		checkFormulaPattern(formula);
 		checkFormulaBrackets(formula);
 	}
@@ -171,7 +171,10 @@ public class Calculator {
 	 */
 	private static void checkFormulaPattern(String formulaStr) throws Exception {
 		formulaStr = cleanFormula(formulaStr);
-		if (!formulaStr.matches("^[0-9(\\-][0-9\\+\\-\\*\\/()]*[0-9)]$")) {
+		if ( formulaStr.matches("^[0-9(\\-]+[0-9\\+\\-\\*\\/()]*[0-9)]+$")
+			|| formulaStr.matches("[0-9]+$")) {
+			//formula string correct!
+		}else {
 			throw new Exception("formula string not correct!");
 		}
 	}

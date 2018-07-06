@@ -12,6 +12,13 @@ public class CalculatorTest extends TestCase {
 	@Test
 	public void testComputeFormula() throws Exception {
 		System.out.println("---- Test computeFormula() ----");
+		Assert.assertEquals(1, printComputeFormula("1"), DELTA_ERROR);
+		Assert.assertEquals(-1, printComputeFormula("-1"), DELTA_ERROR);
+		Assert.assertEquals(0, printComputeFormula("0"), DELTA_ERROR);
+		Assert.assertEquals(0.0, printComputeFormula("0.0"), DELTA_ERROR);
+		Assert.assertEquals(2.0, printComputeFormula("2.0"), DELTA_ERROR);
+		Assert.assertEquals(-2.0, printComputeFormula("-2.0"), DELTA_ERROR);
+		
 		Assert.assertEquals(3.0, printComputeFormula("1+4/2"), DELTA_ERROR);
 		Assert.assertEquals(-1.0, printComputeFormula("1-4/2"), DELTA_ERROR);
 		Assert.assertEquals(3.0, printComputeFormula("4/2+1"), DELTA_ERROR);
