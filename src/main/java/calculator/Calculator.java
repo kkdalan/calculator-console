@@ -3,6 +3,8 @@ package calculator;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import util.FormulaUtil;
+
 public class Calculator {
 
 	private static final String CMD_EXIT = "exit";
@@ -191,31 +193,43 @@ public class Calculator {
 		formulaStr = formulaStr.replace("*-", "m").replace("/-", "d");
 //		System.out.println("====> " + formulaStr);
 		
-		int mplyIndex = formulaStr.indexOf("*");
-		int divdIndex = formulaStr.indexOf("/");
-		int mIndex = formulaStr.indexOf("m");
-		int dIndex = formulaStr.indexOf("d");
+//		int mplyIndex = formulaStr.indexOf("*");
+//		int divdIndex = formulaStr.indexOf("/");
+//		int mIndex = formulaStr.indexOf("m");
+//		int dIndex = formulaStr.indexOf("d");
+//		int keyIndex = 0;
+//		keyIndex = (mplyIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mplyIndex) : mplyIndex);
+//		keyIndex = (divdIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, divdIndex) : divdIndex);
+//		keyIndex = (mIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mIndex) : mIndex);
+//		keyIndex = (dIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, dIndex) : dIndex);
 		int keyIndex = 0;
-		keyIndex = (mplyIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mplyIndex) : mplyIndex);
-		keyIndex = (divdIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, divdIndex) : divdIndex);
-		keyIndex = (mIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, mIndex) : mIndex);
-		keyIndex = (dIndex == -1) ? keyIndex : (keyIndex > 0 ? Math.min(keyIndex, dIndex) : dIndex);
+		if(FormulaUtil.indexOfSymbols(formulaStr, "*", "/", "m", "d") != -1) {
+			keyIndex = FormulaUtil.indexOfSymbols(formulaStr, "*", "/", "m", "d");
+		}
 		String leftStr = formulaStr.substring(0, keyIndex);
 //		System.out.println("left string = " + leftStr);
 		
-		int addIndex = leftStr.lastIndexOf("+");
-		int minusIndex = leftStr.lastIndexOf("-");
-		int beginIndex = 0;
-		beginIndex = (addIndex == -1) ? beginIndex : addIndex;
-		beginIndex = (minusIndex == -1) ? beginIndex : Math.max(beginIndex, minusIndex);
+//		int addIndex = leftStr.lastIndexOf("+");
+//		int minusIndex = leftStr.lastIndexOf("-");
+//		int beginIndex = 0;
+//		beginIndex = (addIndex == -1) ? beginIndex : addIndex;
+//		beginIndex = (minusIndex == -1) ? beginIndex : Math.max(beginIndex, minusIndex);
+		int beginIndex = 0; 
+		if(FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-")!=-1) {
+			beginIndex = FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-");
+		}
 		String rightStr = formulaStr.substring(keyIndex+1,formulaStr.length());
 //		System.out.println("right string = " + rightStr);
 		
-		int addIndex2 = rightStr.indexOf("+");
-		int minusIndex2 = rightStr.indexOf("-");
+//		int addIndex2 = rightStr.indexOf("+");
+//		int minusIndex2 = rightStr.indexOf("-");
+//		int endIndex = formulaStr.length();
+//		endIndex = (addIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + addIndex2);
+//		endIndex = (minusIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + minusIndex2);
 		int endIndex = formulaStr.length();
-		endIndex = (addIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + addIndex2);
-		endIndex = (minusIndex2 == -1) ? endIndex : Math.min(endIndex, keyIndex + 1 + minusIndex2);
+		if (FormulaUtil.indexOfSymbols(rightStr, "+", "-") != -1) {
+			endIndex = keyIndex + 1 + FormulaUtil.indexOfSymbols(rightStr, "+", "-");
+		}
 		String subStr = formulaStr.substring(beginIndex , endIndex);
 		subStr = subStr.substring(0,1).equals("+")? subStr.substring(1):subStr;
 		subStr = subStr.substring(0,1).equals("-")? subStr.substring(1):subStr;
