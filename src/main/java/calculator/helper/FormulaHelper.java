@@ -4,6 +4,14 @@ import util.FormulaUtil;
 
 public class FormulaHelper {
 
+	public static String findBracketsPart(String formula) {
+		String subStr = FormulaUtil.cleanSpace(formula);
+		subStr = subStr.substring(0, subStr.indexOf(")")+1);
+		subStr = subStr.substring(subStr.lastIndexOf("("));
+		subStr.replace("(", "").replace(")", "");
+		return subStr;
+	}
+	
 	public static String findMultiplyDivicePart(String formula) {
 		// System.out.println("formula = " + formula);
 		String formulaStr = FormulaUtil.cleanSpace(formula);

@@ -108,22 +108,12 @@ public class Calculator {
 	 */
 	protected static String simplifyBracketsPart(String formula) {
 		String formulaStr = FormulaUtil.cleanSpace(formula);
-		formulaStr = formulaStr.substring(0, formulaStr.indexOf(")")+1);
-		formulaStr = formulaStr.substring(formulaStr.lastIndexOf("("));
-		
-		double value = computeFormulaValue(formulaStr.replace("(", "").replace(")", ""));
-		formula = formula.replace(formulaStr, String.valueOf(value));
-		return formula;
+		String bracketsStr = FormulaHelper.findBracketsPart(formulaStr);
+		double value = computeFormulaValue(bracketsStr.replace("(", "").replace(")", ""));
+		String newFormula = formulaStr.replace(bracketsStr, String.valueOf(value));
+		return newFormula;
 	}
 
-
-	
-
-
-	
-
-	
-	
 	/**
 	 * simplify formula by evaluating multiply and divide operation part
 	 * @param formula
@@ -132,11 +122,12 @@ public class Calculator {
 	protected static String simplifyMultiplyDividePart(String formula) {
 		String formulaStr = FormulaUtil.cleanSpace(formula);
 		String subStr = FormulaHelper.findMultiplyDivicePart(formulaStr);
+		String newFormula = formulaStr;
 		if (!subStr.equals("")) {
 			double value = FormulaHelper.computeMultiplyAndDivideValue(subStr);
-			formula = formulaStr.replace(subStr, String.valueOf(value));
+			newFormula = formulaStr.replace(subStr, String.valueOf(value));
 		}
-		return formula;
+		return newFormula;
 	}
 
 	
