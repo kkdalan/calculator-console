@@ -69,7 +69,7 @@ public class CalculatorTest extends TestCase {
 
 	
 	@Test
-	public void testSimplifyBrackets() {
+	public void testSimplifyBrackets() throws Exception {
 		System.out.println("---- Test simplifyBrackets() ----");
 		Assert.assertEquals("1.5+1", printSimplifyBrackets("(2/4+1)+1"));
 		Assert.assertEquals("1+1.5", printSimplifyBrackets("1+(2/4+1)"));
@@ -102,7 +102,7 @@ public class CalculatorTest extends TestCase {
 
 	
 	@Test
-	public void testComputeFormulaValue() {
+	public void testComputeFormulaValue() throws Exception {
 		System.out.println("---- Test computeFormulaValue() ----");
 		Assert.assertEquals(-0.5, printComputeFormulaValue("-2/-4/-1"), DELTA_ERROR);
 		Assert.assertEquals(1.5, printComputeFormulaValue("-2/-4/+1"), DELTA_ERROR);
@@ -157,8 +157,8 @@ public class CalculatorTest extends TestCase {
 		return answer;
 	}
 
-	private double printComputeFormulaValue(String formula) {
-		double answer = Calculator.computeFormulaValue(formula);
+	private double printComputeFormulaValue(String formula) throws Exception {
+		double answer = Calculator.computeMultiplyDivide(formula);
 		System.out.println(">>> " + formula + " => " + answer);
 		return answer;
 	}
@@ -169,7 +169,7 @@ public class CalculatorTest extends TestCase {
 		return newFormula;
 	}
 	
-	private String printSimplifyBrackets(String formula) {
+	private String printSimplifyBrackets(String formula) throws Exception {
 		String newFormula = Calculator.simplifyBracketsPart(formula);
 		System.out.println(">>> " + formula + " => " + newFormula);
 		return newFormula;

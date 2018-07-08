@@ -4,14 +4,26 @@ import util.FormulaUtil;
 
 public class FormulaHelper {
 
+	/**
+	 * find the first sub-string around with '(' and ')' in formula string
+	 * 
+	 * @param formula
+	 * @return
+	 */
 	public static String findBracketsPart(String formula) {
 		String subStr = FormulaUtil.cleanSpace(formula);
-		subStr = subStr.substring(0, subStr.indexOf(")")+1);
+		subStr = subStr.substring(0, subStr.indexOf(")") + 1);
 		subStr = subStr.substring(subStr.lastIndexOf("("));
 		subStr.replace("(", "").replace(")", "");
 		return subStr;
 	}
-	
+
+	/**
+	 * find the first multiple/divide part sub-string in formula string
+	 * 
+	 * @param formula
+	 * @return
+	 */
 	public static String findMultiplyDivicePart(String formula) {
 		// System.out.println("formula = " + formula);
 		String formulaStr = FormulaUtil.cleanSpace(formula);
@@ -52,7 +64,7 @@ public class FormulaHelper {
 	 * @param formula
 	 * @return
 	 */
-	public static double computeMultiplyAndDivideValue(String formula) {
+	public static double computeMultiplyDividePartValue(String formula) {
 		String formulaStr = formula.replace(" ", "");
 		String[] numbers = formulaStr.split("[\\*\\/]");
 		String[] symbols = formulaStr.replaceAll("[0-9.\\-+]", "").split("");
@@ -78,7 +90,7 @@ public class FormulaHelper {
 	 * @param formula
 	 * @return
 	 */
-	public static double computePlusAndMinusValue(String formula) {
+	public static double computePlusMinusPartValue(String formula) {
 		String formulaStr = formula.replace(" ", "").replace("++", "+").replace("+-", "-").replace("-+", "-")
 				.replace("--", "+");
 

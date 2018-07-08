@@ -3,8 +3,7 @@ package util;
 public class FormulaUtil {
 
 	/**
-	 * find the index of the first position among multiple symbols 
-	 * from the string
+	 * find the index of the first position among multiple symbols from the string
 	 * 
 	 * @param str
 	 * @param syms
@@ -22,8 +21,7 @@ public class FormulaUtil {
 	}
 
 	/**
-	 * find the index of the last position among multiple symbols 
-	 * from the string
+	 * find the index of the last position among multiple symbols from the string
 	 * 
 	 * @param str
 	 * @param syms
@@ -58,9 +56,10 @@ public class FormulaUtil {
 	public static boolean containsBracketsPair(String formula) {
 		return formula.contains("(") && formula.contains(")");
 	}
-	
+
 	/**
 	 * check if formula contains '*' or '/'
+	 * 
 	 * @param formula
 	 * @return
 	 */
