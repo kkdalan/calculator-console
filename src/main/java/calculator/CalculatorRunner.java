@@ -30,7 +30,7 @@ public class CalculatorRunner {
 					System.out.println("  ans = " + String.valueOf(answer));
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
-//					 e.printStackTrace();
+					 e.printStackTrace();
 				}
 			}
 			System.out.print(INPUT_FLAG);

@@ -66,7 +66,7 @@ public class FormulaUtil {
 	public static boolean containsMultiplyOrDivide(String formula) {
 		return formula.contains("*") || formula.contains("/");
 	}
-	
+
 	/**
 	 * check if formula contains '^'
 	 * 
@@ -76,4 +76,19 @@ public class FormulaUtil {
 	public static boolean containsPower(String formula) {
 		return formula.contains("^");
 	}
+
+	/**
+	 * check if formula contains variable
+	 * 
+	 * @param formula
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean containsVariable(String formula) throws Exception {
+		String[] token = formula.split("where");
+		String formulaStr = token[0];
+		boolean result = formulaStr.matches(".*[a-z].*");
+		return result;
+	}
+
 }

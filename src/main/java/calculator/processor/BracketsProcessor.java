@@ -6,7 +6,7 @@ import util.FormulaUtil;
 public class BracketsProcessor extends FormulaProcessor {
 
 	public BracketsProcessor() {
-		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getInstance(FormulaProcessorFactory.TYPE_POWER);
+		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_POWER);
 		this.setNextProcessor(formulaProcessor);
 	}
 	

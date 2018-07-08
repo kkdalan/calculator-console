@@ -5,6 +5,27 @@ import util.FormulaUtil;
 public class FormulaHelper {
 
 	/**
+	 * find variable definition part in formula string
+	 * 
+	 * @param formula
+	 * @return
+	 */
+	public static String findVariableDefinitionPart(String formula) {
+
+		String formulaStr = FormulaUtil.cleanSpace(formula);
+
+		int keyIndex = 0;
+		if (FormulaUtil.indexOfSymbols(formulaStr, "where") != -1) {
+			keyIndex = FormulaUtil.indexOfSymbols(formulaStr, "where");
+		}
+		
+		int beginIndex = keyIndex + "where".length();
+		String rightStr = formulaStr.substring(beginIndex, formulaStr.length());
+
+		return rightStr;
+	}
+
+	/**
 	 * find the first sub-string around with '(' and ')' in formula string
 	 * 
 	 * @param formula
@@ -38,15 +59,15 @@ public class FormulaHelper {
 		// System.out.println("left string = " + leftStr);
 
 		int beginIndex = 0;
-		if (FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-","*","/") != -1) {
-			beginIndex = FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-","*","/");
+		if (FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-", "*", "/") != -1) {
+			beginIndex = FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-", "*", "/");
 		}
 		String rightStr = formulaStr.substring(keyIndex + 1, formulaStr.length());
 		// System.out.println("right string = " + rightStr);
 
 		int endIndex = formulaStr.length();
-		if (FormulaUtil.indexOfSymbols(rightStr, "+", "-","*","/") != -1) {
-			endIndex = keyIndex + 1 + FormulaUtil.indexOfSymbols(rightStr, "+", "-","*","/");
+		if (FormulaUtil.indexOfSymbols(rightStr, "+", "-", "*", "/") != -1) {
+			endIndex = keyIndex + 1 + FormulaUtil.indexOfSymbols(rightStr, "+", "-", "*", "/");
 		}
 		String subStr = formulaStr.substring(beginIndex, endIndex);
 		subStr = subStr.substring(0, 1).equals("+") ? subStr.substring(1) : subStr;
@@ -59,9 +80,7 @@ public class FormulaHelper {
 		// System.out.println("====> "+subStr);
 		return subStr;
 	}
-	
-	
-	
+
 	/**
 	 * find the first multiple/divide part sub-string in formula string
 	 * 
@@ -123,7 +142,7 @@ public class FormulaHelper {
 		// System.out.println(answer);
 		return answer;
 	}
-	
+
 	/**
 	 * compute multiply and divide part value
 	 * 
@@ -148,7 +167,7 @@ public class FormulaHelper {
 		// System.out.println(answer);
 		return answer;
 	}
-	
+
 	/**
 	 * compute plus and minus operation part value
 	 * 

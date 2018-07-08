@@ -6,7 +6,7 @@ import util.FormulaUtil;
 public class PowerProcessor extends FormulaProcessor {
 
 	public PowerProcessor() {
-		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getInstance(FormulaProcessorFactory.TYPE_MULDIV);
+		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_MULDIV);
 		this.setNextProcessor(formulaProcessor);
 	}
 	

@@ -32,8 +32,8 @@ public class Calculator {
 	 * @throws Exception
 	 */
 	public static double compute(String formula) throws Exception {
-		checkFormula(formula);
-		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getDefaultInstance();
+//		checkFormula(formula);
+		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getDefaultProcessor();
 		return formulaProcessor.computeFormula(formula);
 	}
 

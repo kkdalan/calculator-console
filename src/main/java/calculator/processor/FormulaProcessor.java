@@ -28,7 +28,7 @@ public abstract class FormulaProcessor {
 		return FormulaUtil.cleanSpace(formula);
 	}
 
-	public abstract boolean conditionFound(String formula);
+	public abstract boolean conditionFound(String formula) throws Exception;
 
 	public abstract String simplifyFormula(String formula) throws Exception;
 
