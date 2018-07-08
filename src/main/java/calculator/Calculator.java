@@ -1,49 +1,34 @@
 package calculator;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import calculator.helper.FormulaHelper;
 import util.FormulaUtil;
 
 public class Calculator {
 
-	private static final String CMD_EXIT = "exit";
-
-	public static void main(String[] args) throws Exception {
-		Calculator.start();
-	}
-
 	/**
-	 * start calculator console
+	 * ==================================================================== 
+	 * Recursively compute formula
 	 * 
+	 * 1. Find brackets part in formula and compute value to replace 
+	 * the brackets part until no brackets found.
+	 * 
+	 * 2. Find multiply and divide operation in formula and compute 
+	 * value to replace the multiply/divide part until no multiply/divide 
+	 * operation found.
+	 * 
+	 * 3. The formula will contain plus and minus operation only, compute 
+	 * the plus/minus operation to find the answer.
+	 * ====================================================================
+	 * 
+	 * @param formula
+	 * @return
 	 * @throws Exception
 	 */
-	public static void start() throws Exception {
-		System.out.println("=== Java Calculator ===");
-		System.out.println("Notes: available operators: { + , - , * , / , ( , ) }");
-		System.out.println("Enter formula or ('exit') to exit.");
-		System.out.println("ex: ( 1+2)* 3/4 ");
-
-		System.out.print(">>> ");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String formula = "";
-		while (!(formula = br.readLine()).equalsIgnoreCase(CMD_EXIT)) {
-			if (!formula.trim().equals("")) {
-				try {
-					checkFormula(formula);
-					double answer = computeFormula(formula);
-					System.out.println("  ans = " + String.valueOf(answer));
-				} catch (Exception e) {
-					System.err.println(e.getMessage());
-					// e.printStackTrace();
-				}
-			}
-			System.out.print(">>> ");
-		}
-		System.out.println("Bye!");
+	public static double compute(String formula) throws Exception {
+		checkFormula(formula);
+		return computeFormula(formula);
 	}
-
+	
 	/**
 	 * validate formula pattern, brackets ... etc.
 	 * 
@@ -54,26 +39,15 @@ public class Calculator {
 		FormulaHelper.checkFormulaPattern(formula);
 		FormulaHelper.checkFormulaBrackets(formula);
 	}
-
+	
 	/**
-	 * ============================================================ Recursively
-	 * compute formula
-	 * 
-	 * 1. Find brackets part in formula and compute value to replace the brackets
-	 * part until no brackets found.
-	 * 
-	 * 2. Find multiply and divide operation in formula and compute value to replace
-	 * the multiply/divide part until no multiply/divide operation found.
-	 * 
-	 * 3. The formula will contain plus and minus operation only, compute the
-	 * plus/minus operation to find the answer.
-	 * ============================================================
+	 * compute formula value with brackets
 	 * 
 	 * @param formula
 	 * @return
 	 * @throws Exception
 	 */
-	public static double computeFormula(String formula) throws Exception {
+	protected static double computeFormula(String formula) throws Exception {
 		formula = FormulaUtil.cleanSpace(formula);
 		if (FormulaUtil.containsBracketsPair(formula)) {
 			String newFormula = simplifyBracketsPart(formula);
@@ -82,15 +56,15 @@ public class Calculator {
 			return computeMultiplyDivide(formula);
 		}
 	}
-
+	
 	/**
-	 * compute formula value without brackets
+	 * compute multiply/divide part first (without brackets)
 	 * 
 	 * @param formula
 	 * @return
 	 * @throws Exception 
 	 */
-	public static double computeMultiplyDivide(String formula) throws Exception {
+	protected static double computeMultiplyDivide(String formula) throws Exception {
 		FormulaHelper.throwExceptionAsBrachetsOutside(formula);
 		
 		formula = FormulaUtil.cleanSpace(formula);
