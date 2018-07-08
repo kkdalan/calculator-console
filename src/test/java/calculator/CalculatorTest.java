@@ -3,6 +3,7 @@ package calculator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import calculator.helper.FormulaHelper;
 import junit.framework.TestCase;
 
 public class CalculatorTest extends TestCase {
@@ -141,7 +142,7 @@ public class CalculatorTest extends TestCase {
 	private boolean hasExceptionAsComputeFormulaValueWithBracketsOutside(String formula) {
 		boolean hasExcpetion = false;
 		try {
-			Calculator.throwExceptionAsBrachetsOutside(formula);
+			FormulaHelper.throwExceptionAsBrachetsOutside(formula);
 			System.out.println(">>> " + formula + " => ok!");
 		} catch (Exception e) {
 			hasExcpetion = true;
@@ -163,13 +164,13 @@ public class CalculatorTest extends TestCase {
 	}
 
 	private String printSimplifyMultiplyAndDivide(String formula) {
-		String newFormula = Calculator.simplifyMultiplyAndDivide(formula);
+		String newFormula = Calculator.simplifyMultiplyDividePart(formula);
 		System.out.println(">>> " + formula + " => " + newFormula);
 		return newFormula;
 	}
 	
 	private String printSimplifyBrackets(String formula) {
-		String newFormula = Calculator.simplifyBrackets(formula);
+		String newFormula = Calculator.simplifyBracketsPart(formula);
 		System.out.println(">>> " + formula + " => " + newFormula);
 		return newFormula;
 	}

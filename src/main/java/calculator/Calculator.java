@@ -3,6 +3,7 @@ package calculator;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import calculator.helper.FormulaHelper;
 import util.FormulaUtil;
 
 public class Calculator {
@@ -29,7 +30,7 @@ public class Calculator {
 		while (!(formula = br.readLine()).equalsIgnoreCase(CMD_EXIT)) {
 			if(!formula.trim().equals("")) {
 				try {
-					validateFormula(formula);
+					checkFormula(formula);
 					double answer = computeFormula(formula);
 					System.out.println("  ans = " + String.valueOf(answer));
 				} catch (Exception e) {
@@ -47,9 +48,9 @@ public class Calculator {
 	 * @param formula
 	 * @throws Exception
 	 */
-	protected static void validateFormula(String formula) throws Exception {
-		checkFormulaPattern(formula);
-		checkFormulaBrackets(formula);
+	protected static void checkFormula(String formula) throws Exception {
+		FormulaHelper.checkFormulaPattern(formula);
+		FormulaHelper.checkFormulaBrackets(formula);
 	}
 
 	/**
@@ -71,27 +72,17 @@ public class Calculator {
 	 * @throws Exception 
 	 */
 	public static double computeFormula(String formula) throws Exception {
-		formula = cleanFormula(formula);
-		if (hasBracketsPair(formula)) {
-			String newFormula = simplifyBrackets(formula);
+		formula = FormulaUtil.cleanSpace(formula);
+		if (FormulaUtil.containsBracketsPair(formula)) {
+			String newFormula = simplifyBracketsPart(formula);
 			return computeFormula(newFormula);
 		} else {
-			throwExceptionAsBrachetsOutside(formula);
+			FormulaHelper.throwExceptionAsBrachetsOutside(formula);
 			return computeFormulaValue(formula);
 		}
 	}
 
-	/**
-	 * throws exception as formula has brackets outside, ex: (2/3)
-	 * @param formula
-	 * @throws Exception
-	 */
-	protected static void throwExceptionAsBrachetsOutside(String formula) throws Exception {
-		if (formula.substring(0, 1).equals("(")
-				&& formula.substring(formula.length() - 1, formula.length()).equals(")")) {
-			throw new Exception("formula with ( and ) is not allowed!");
-		}
-	}
+	
 	
 	/**
 	 * compute formula value without brackets
@@ -99,192 +90,57 @@ public class Calculator {
 	 * @return
 	 */
 	public static double computeFormulaValue(String formula) {
-		formula = cleanFormula(formula);
-		if (hasMultiplyOrDivide(formula)) {
-			String newFormula = simplifyMultiplyAndDivide(formula);
+		formula = FormulaUtil.cleanSpace(formula);
+		if (FormulaUtil.containsMultiplyOrDivide(formula)) {
+			String newFormula = simplifyMultiplyDividePart(formula);
 			return computeFormulaValue(newFormula);
 		} else {
-			return computePlusAndMinusValue(formula);
+			return FormulaHelper.computePlusAndMinusValue(formula);
 		}
 	}
 
-	/**
-	 * clean formula string
-	 * @param formula
-	 * @return
-	 */
-	private static String cleanFormula(String formula) {
-		formula = formula.replace(" ", "");
-		return formula;
-	}
+	
 
 	/**
 	 * simplify brackets and evaluate value inside
 	 * @param formula
 	 * @return
 	 */
-	protected static String simplifyBrackets(String formula) {
-		String formulaStr = formula.replace(" ", "");
+	protected static String simplifyBracketsPart(String formula) {
+		String formulaStr = FormulaUtil.cleanSpace(formula);
 		formulaStr = formulaStr.substring(0, formulaStr.indexOf(")")+1);
 		formulaStr = formulaStr.substring(formulaStr.lastIndexOf("("));
 		
-		Double value = computeFormulaValue(formulaStr.replace("(", "").replace(")", ""));
-		formula = formula.replace(formulaStr, value.toString());
+		double value = computeFormulaValue(formulaStr.replace("(", "").replace(")", ""));
+		formula = formula.replace(formulaStr, String.valueOf(value));
 		return formula;
 	}
 
-	/**
-	 * check if formula contains '(' or ')'
-	 * @param formula
-	 * @return
-	 */
-	private static boolean hasBracketsPair(String formula) {
-		return formula.contains("(") && formula.contains(")");
-	}
+
 	
-	/**
-	 * check if formula contains '*' or '/'
-	 * @param formula
-	 * @return
-	 */
-	private static boolean hasMultiplyOrDivide(String formula) {
-		return formula.contains("*") || formula.contains("/");
-	}
 
-	/**
-	 * check if brackets enclosed
-	 * @param formula
-	 * @throws Exception
-	 */
-	private static void checkFormulaBrackets(String formulaStr) throws Exception {
-		formulaStr = cleanFormula(formulaStr).replaceAll("[0-9.\\+\\-\\*\\/]", "");
-		while (formulaStr.contains("()")) {
-			formulaStr = formulaStr.replace("()", "");
-		}
-		if (formulaStr.contains("(") || formulaStr.contains(")")) {
-			throw new Exception("brackets pair not complete!");
-		}
-	}
 
-	/**
-	 * check if characters exist
-	 * @param formulaStr
-	 * @throws Exception
-	 */
-	private static void checkFormulaPattern(String formulaStr) throws Exception {
-		formulaStr = cleanFormula(formulaStr);
-		if ( formulaStr.matches("^[0-9(\\-]+[0-9\\+\\-\\*\\/()]*[0-9)]+$")
-			|| formulaStr.matches("[0-9]+$")) {
-			//formula string correct!
-		}else {
-			throw new Exception("formula string not correct!");
-		}
-	}
+	
+
+	
 	
 	/**
 	 * simplify formula by evaluating multiply and divide operation part
 	 * @param formula
 	 * @return
 	 */
-	protected static String simplifyMultiplyAndDivide(String formula) {
-//		System.out.println("formula = " + formula);
-		
-		String formulaStr = formula.replace(" ", "");
-		formulaStr = formulaStr.replace("*-", "m").replace("/-", "d");
-//		System.out.println("====> " + formulaStr);
-		
-		int keyIndex = 0;
-		if(FormulaUtil.indexOfSymbols(formulaStr, "*", "/", "m", "d") != -1) {
-			keyIndex = FormulaUtil.indexOfSymbols(formulaStr, "*", "/", "m", "d");
-		}
-		String leftStr = formulaStr.substring(0, keyIndex);
-//		System.out.println("left string = " + leftStr);
-		
-		int beginIndex = 0; 
-		if(FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-")!=-1) {
-			beginIndex = FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-");
-		}
-		String rightStr = formulaStr.substring(keyIndex+1,formulaStr.length());
-//		System.out.println("right string = " + rightStr);
-		
-		int endIndex = formulaStr.length();
-		if (FormulaUtil.indexOfSymbols(rightStr, "+", "-") != -1) {
-			endIndex = keyIndex + 1 + FormulaUtil.indexOfSymbols(rightStr, "+", "-");
-		}
-		String subStr = formulaStr.substring(beginIndex , endIndex);
-		subStr = subStr.substring(0,1).equals("+")? subStr.substring(1):subStr;
-		subStr = subStr.substring(0,1).equals("-")? subStr.substring(1):subStr;
-//		System.out.println("sub string = " + subStr);
-		
-		subStr = subStr.replace("m", "*-").replace("d", "/-");
-//		System.out.println("====> "+subStr);
-		
+	protected static String simplifyMultiplyDividePart(String formula) {
+		String formulaStr = FormulaUtil.cleanSpace(formula);
+		String subStr = FormulaHelper.findMultiplyDivicePart(formulaStr);
 		if (!subStr.equals("")) {
-			Double value = computeMultiplyAndDivideValue(subStr);
-			formulaStr = formulaStr.replace("m", "*-").replace("d", "/-");
-			formula = formulaStr.replace(subStr, value.toString());
+			double value = FormulaHelper.computeMultiplyAndDivideValue(subStr);
+			formula = formulaStr.replace(subStr, String.valueOf(value));
 		}
-//		System.out.println("simplified = "+formula);
-		
 		return formula;
 	}
 
-	/**
-	 * compute multiply and divide part value
-	 * @param formula
-	 * @return
-	 */
-	private static double computeMultiplyAndDivideValue(String formula) {
-		String formulaStr = formula.replace(" ", "");
-		String[] numbers = formulaStr.split("[\\*\\/]");
-		String[] symbols = formulaStr.replaceAll("[0-9.\\-+]", "").split("");
-		
-		double answer = Double.valueOf(numbers[0]);
-		for (int i = 1; i < numbers.length; i++) {
-
-			String sym = symbols[i - 1];
-			if (sym.equals("*")) {
-				answer *= Double.valueOf(numbers[i]);
-			}
-			if (sym.equals("/")) {
-				answer /= Double.valueOf(numbers[i]);
-			}
-		}
-//		System.out.println(answer);
-		return answer;
-	}
 	
-	/**
-	 * compute plus and minus operation part value
-	 * @param formula
-	 * @return
-	 */
-	private static double computePlusAndMinusValue(String formula) {
-		String formulaStr = formula.replace(" ", "")
-								   .replace("++", "+")
-								   .replace("+-", "-")
-								   .replace("-+", "-")
-								   .replace("--", "+");
-
-		String[] numbers = formulaStr.split("[\\+\\-]");
-		String[] symbols = formulaStr.replaceAll("[0-9.]", "").split("");
-		
-		if(numbers[0].equals("")) {
-			numbers[0] = "0";
-		}
-		
-		double answer = Double.valueOf(numbers[0]);
-		for (int i = 1; i < numbers.length; i++) {
-			String sym = symbols[i - 1];
-			if (sym.equals("+")) {
-				answer += Double.valueOf(numbers[i]);
-			}
-			if (sym.equals("-")) {
-				answer -= Double.valueOf(numbers[i]);
-			}
-		}
-//		System.out.println(answer);
-		return answer;
-	}
+	
+	
 	
 }
