@@ -3,22 +3,22 @@ package util;
 public class FormulaUtil {
 
 	public static int indexOfSymbols(String str, String... syms) {
-		int finalIndex = -1;
+		int firstIndex = -1;
 		for (String sym : syms) {
 			int symIndex = str.indexOf(sym);
 			if (symIndex != -1) {
-				finalIndex = (finalIndex != -1 ? Math.min(finalIndex, symIndex) : symIndex);
+				firstIndex = (firstIndex != -1 ? Math.min(firstIndex, symIndex) : symIndex);
 			}
 		}
-		return finalIndex;
+		return firstIndex;
 	}
 
 	public static int lastIndexOfSymbols(String str, String... syms) {
-		int finalIndex = -1;
+		int lastIndex = -1;
 		for (String sym : syms) {
 			int symIndex = str.lastIndexOf(sym);
-			finalIndex = (symIndex == -1) ? finalIndex : Math.max(finalIndex, symIndex);
+			lastIndex = (symIndex == -1) ? lastIndex : Math.max(lastIndex, symIndex);
 		}
-		return finalIndex;
+		return lastIndex;
 	}
 }
