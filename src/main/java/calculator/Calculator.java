@@ -25,7 +25,7 @@ public class Calculator {
 	 * @throws Exception
 	 */
 	public static double compute(String formula) throws Exception {
-//		checkFormula(formula);
+		checkFormula(formula);
 		return computeFormula(formula);
 	}
 	

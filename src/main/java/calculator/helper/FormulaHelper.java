@@ -188,7 +188,7 @@ public class FormulaHelper {
 	 */
 	public static void checkFormulaPattern(String formulaStr) throws Exception {
 		formulaStr = FormulaUtil.cleanSpace(formulaStr);
-		if (formulaStr.matches("^[0-9(\\-]+[0-9\\+\\-\\*\\/()]*[0-9)]+$") || formulaStr.matches("[0-9]+$")) {
+		if (formulaStr.matches("^[0-9.(\\-]+[0-9^\\+\\-\\*\\/()]*[0-9.)]+$") || formulaStr.matches("[0-9]+$")) {
 			// formula string correct!
 		} else {
 			throw new Exception("formula string not correct!");
