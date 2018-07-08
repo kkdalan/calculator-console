@@ -19,6 +19,50 @@ public class FormulaHelper {
 	}
 
 	/**
+	 * find the first power part sub-string in formula string
+	 * 
+	 * @param formula
+	 * @return
+	 */
+	public static String findPowerPart(String formula) {
+		// System.out.println("formula = " + formula);
+		String formulaStr = FormulaUtil.cleanSpace(formula);
+		formulaStr = formula.replace("^-", "p");
+		// System.out.println("====> " + formulaStr);
+
+		int keyIndex = 0;
+		if (FormulaUtil.indexOfSymbols(formulaStr, "^", "p") != -1) {
+			keyIndex = FormulaUtil.indexOfSymbols(formulaStr, "^", "p");
+		}
+		String leftStr = formulaStr.substring(0, keyIndex);
+		// System.out.println("left string = " + leftStr);
+
+		int beginIndex = 0;
+		if (FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-","*","/") != -1) {
+			beginIndex = FormulaUtil.lastIndexOfSymbols(leftStr, "+", "-","*","/");
+		}
+		String rightStr = formulaStr.substring(keyIndex + 1, formulaStr.length());
+		// System.out.println("right string = " + rightStr);
+
+		int endIndex = formulaStr.length();
+		if (FormulaUtil.indexOfSymbols(rightStr, "+", "-","*","/") != -1) {
+			endIndex = keyIndex + 1 + FormulaUtil.indexOfSymbols(rightStr, "+", "-","*","/");
+		}
+		String subStr = formulaStr.substring(beginIndex, endIndex);
+		subStr = subStr.substring(0, 1).equals("+") ? subStr.substring(1) : subStr;
+		subStr = subStr.substring(0, 1).equals("-") ? subStr.substring(1) : subStr;
+		subStr = subStr.substring(0, 1).equals("*") ? subStr.substring(1) : subStr;
+		subStr = subStr.substring(0, 1).equals("/") ? subStr.substring(1) : subStr;
+		// System.out.println("sub string = " + subStr);
+
+		subStr = subStr.replace("p", "^-");
+		// System.out.println("====> "+subStr);
+		return subStr;
+	}
+	
+	
+	
+	/**
 	 * find the first multiple/divide part sub-string in formula string
 	 * 
 	 * @param formula
@@ -59,19 +103,40 @@ public class FormulaHelper {
 	}
 
 	/**
+	 * compute power part value
+	 * 
+	 * @param formula
+	 * @return
+	 */
+	public static double computePowerPartValue(String formula) {
+		String formulaStr = FormulaUtil.cleanSpace(formula);
+		String[] numbers = formulaStr.split("[\\^]");
+		String[] symbols = formulaStr.replaceAll("[0-9.\\-\\+\\*\\/]", "").split("");
+
+		double answer = Double.valueOf(numbers[0]);
+		for (int i = 1; i < numbers.length; i++) {
+			String sym = symbols[i - 1];
+			if (sym.equals("^")) {
+				answer = Math.pow(answer, Double.valueOf(numbers[i]));
+			}
+		}
+		// System.out.println(answer);
+		return answer;
+	}
+	
+	/**
 	 * compute multiply and divide part value
 	 * 
 	 * @param formula
 	 * @return
 	 */
 	public static double computeMultiplyDividePartValue(String formula) {
-		String formulaStr = formula.replace(" ", "");
+		String formulaStr = FormulaUtil.cleanSpace(formula);
 		String[] numbers = formulaStr.split("[\\*\\/]");
-		String[] symbols = formulaStr.replaceAll("[0-9.\\-+]", "").split("");
+		String[] symbols = formulaStr.replaceAll("[0-9.\\-\\+]", "").split("");
 
 		double answer = Double.valueOf(numbers[0]);
 		for (int i = 1; i < numbers.length; i++) {
-
 			String sym = symbols[i - 1];
 			if (sym.equals("*")) {
 				answer *= Double.valueOf(numbers[i]);
@@ -83,7 +148,7 @@ public class FormulaHelper {
 		// System.out.println(answer);
 		return answer;
 	}
-
+	
 	/**
 	 * compute plus and minus operation part value
 	 * 
@@ -91,7 +156,7 @@ public class FormulaHelper {
 	 * @return
 	 */
 	public static double computePlusMinusPartValue(String formula) {
-		String formulaStr = formula.replace(" ", "").replace("++", "+").replace("+-", "-").replace("-+", "-")
+		String formulaStr = FormulaUtil.cleanSpace(formula).replace("++", "+").replace("+-", "-").replace("-+", "-")
 				.replace("--", "+");
 
 		String[] numbers = formulaStr.split("[\\+\\-]");

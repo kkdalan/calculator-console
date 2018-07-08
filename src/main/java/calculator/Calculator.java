@@ -25,7 +25,7 @@ public class Calculator {
 	 * @throws Exception
 	 */
 	public static double compute(String formula) throws Exception {
-		checkFormula(formula);
+//		checkFormula(formula);
 		return computeFormula(formula);
 	}
 	
@@ -47,11 +47,30 @@ public class Calculator {
 	 * @return
 	 * @throws Exception
 	 */
-	protected static double computeFormula(String formula) throws Exception {
+	public static double computeFormula(String formula) throws Exception {
 		formula = FormulaUtil.cleanSpace(formula);
 		if (FormulaUtil.containsBracketsPair(formula)) {
 			String newFormula = simplifyBracketsPart(formula);
 			return computeFormula(newFormula);
+		} else {
+			return computePower(formula);
+		}
+	}
+	
+	/**
+	 * compute power part first (without brackets)
+	 * 
+	 * @param formula
+	 * @return
+	 * @throws Exception 
+	 */
+	public static double computePower(String formula) throws Exception {
+		FormulaHelper.throwExceptionAsBrachetsOutside(formula);
+		
+		formula = FormulaUtil.cleanSpace(formula);
+		if (FormulaUtil.containsPower(formula)) {
+			String newFormula = simplifyPowerPart(formula);
+			return computePower(newFormula);
 		} else {
 			return computeMultiplyDivide(formula);
 		}
@@ -64,7 +83,7 @@ public class Calculator {
 	 * @return
 	 * @throws Exception 
 	 */
-	protected static double computeMultiplyDivide(String formula) throws Exception {
+	public static double computeMultiplyDivide(String formula) throws Exception {
 		FormulaHelper.throwExceptionAsBrachetsOutside(formula);
 		
 		formula = FormulaUtil.cleanSpace(formula);
@@ -72,8 +91,12 @@ public class Calculator {
 			String newFormula = simplifyMultiplyDividePart(formula);
 			return computeMultiplyDivide(newFormula);
 		} else {
-			return FormulaHelper.computePlusMinusPartValue(formula);
+			return computePlusMinus(formula);
 		}
+	}
+
+	public static double computePlusMinus(String formula) {
+		return FormulaHelper.computePlusMinusPartValue(formula);
 	}
 
 	/**
@@ -88,6 +111,23 @@ public class Calculator {
 		String bracketsStr = FormulaHelper.findBracketsPart(formulaStr);
 		double value = computeMultiplyDivide(bracketsStr.replace("(", "").replace(")", ""));
 		String newFormula = formulaStr.replace(bracketsStr, String.valueOf(value));
+		return newFormula;
+	}
+	
+	/**
+	 * simplify formula by evaluating power operation part
+	 * 
+	 * @param formula
+	 * @return
+	 */
+	protected static String simplifyPowerPart(String formula) {
+		String formulaStr = FormulaUtil.cleanSpace(formula);
+		String subStr = FormulaHelper.findPowerPart(formulaStr);
+		String newFormula = formulaStr;
+		if (!subStr.equals("")) {
+			double value = FormulaHelper.computePowerPartValue(subStr);
+			newFormula = formulaStr.replace(subStr, String.valueOf(value));
+		}
 		return newFormula;
 	}
 	

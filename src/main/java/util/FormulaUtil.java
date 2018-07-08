@@ -66,4 +66,14 @@ public class FormulaUtil {
 	public static boolean containsMultiplyOrDivide(String formula) {
 		return formula.contains("*") || formula.contains("/");
 	}
+	
+	/**
+	 * check if formula contains '^'
+	 * 
+	 * @param formula
+	 * @return
+	 */
+	public static boolean containsPower(String formula) {
+		return formula.contains("^");
+	}
 }
