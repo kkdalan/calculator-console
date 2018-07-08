@@ -87,7 +87,7 @@ public class FormulaUtil {
 	public static boolean containsVariable(String formula) throws Exception {
 		String[] token = formula.split("where");
 		String formulaStr = token[0];
-		boolean result = formulaStr.matches(".*[a-z].*");
+		boolean result = formulaStr.matches(".*[a-zA-Z].*");
 		return result;
 	}
 
