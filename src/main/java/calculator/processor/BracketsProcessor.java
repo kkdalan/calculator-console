@@ -5,11 +5,6 @@ import util.FormulaUtil;
 
 public class BracketsProcessor extends FormulaProcessor {
 
-	public BracketsProcessor() {
-		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_POWER);
-		this.setNextProcessor(formulaProcessor);
-	}
-	
 	@Override
 	public boolean conditionFound(String formula) {
 		return containsBracketsPair(formula);
@@ -23,6 +18,11 @@ public class BracketsProcessor extends FormulaProcessor {
 	@Override
 	public double processFormula(String formula) throws Exception {
 		return getNextProcessor().computeFormula(formula);
+	}
+
+	@Override
+	public FormulaProcessor getNextProcessor() {
+		return FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_POWER);
 	}
 
 	private boolean containsBracketsPair(String formula) {
@@ -39,8 +39,8 @@ public class BracketsProcessor extends FormulaProcessor {
 	private String simplifyBracketsPart(String formula) throws Exception {
 		String formulaStr = FormulaUtil.cleanSpace(formula);
 		String bracketsStr = FormulaHelper.findBracketsPart(formulaStr);
-		FormulaProcessor formulaCalculator = new MultiplyDivideProcessor();
-		double value = formulaCalculator.computeFormula(bracketsStr.replace("(", "").replace(")", ""));
+		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_MULDIV);
+		double value = formulaProcessor.computeFormula(bracketsStr.replace("(", "").replace(")", ""));
 		String newFormula = formulaStr.replace(bracketsStr, String.valueOf(value));
 		return newFormula;
 	}

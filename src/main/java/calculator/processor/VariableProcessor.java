@@ -8,11 +8,6 @@ import util.FormulaUtil;
 
 public class VariableProcessor extends FormulaProcessor {
 
-	public VariableProcessor() {
-		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_BRACKETS);
-		this.setNextProcessor(formulaProcessor);
-	}
-	
 	@Override
 	public String init(String formula) throws Exception {
 		return super.init(formula);
@@ -31,6 +26,11 @@ public class VariableProcessor extends FormulaProcessor {
 	@Override
 	public double processFormula(String formula) throws Exception {
 		return getNextProcessor().computeFormula(formula);
+	}
+	
+	@Override
+	public FormulaProcessor getNextProcessor() {
+		return FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_BRACKETS);
 	}
 
 	/**

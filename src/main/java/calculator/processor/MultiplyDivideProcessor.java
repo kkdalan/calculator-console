@@ -25,6 +25,11 @@ public class MultiplyDivideProcessor extends FormulaProcessor {
 	public double processFormula(String formula) {
 		return FormulaHelper.computePlusMinusPartValue(formula);
 	}
+	
+	@Override
+	public FormulaProcessor getNextProcessor() {
+		return null;
+	}
 
 	/**
 	 * simplify formula by evaluating multiply and divide operation part

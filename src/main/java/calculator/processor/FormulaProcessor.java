@@ -4,16 +4,6 @@ import util.FormulaUtil;
 
 public abstract class FormulaProcessor {
 
-	private FormulaProcessor nextProcessor = null;
-
-	public FormulaProcessor getNextProcessor() {
-		return nextProcessor;
-	}
-
-	public void setNextProcessor(FormulaProcessor nextProcessor) {
-		this.nextProcessor = nextProcessor;
-	}
-
 	public double computeFormula(String formula) throws Exception {
 		String formulaStr = init(formula);
 		if (conditionFound(formulaStr)) {
@@ -33,5 +23,7 @@ public abstract class FormulaProcessor {
 	public abstract String simplifyFormula(String formula) throws Exception;
 
 	public abstract double processFormula(String formula) throws Exception;
-
+	
+	public abstract FormulaProcessor getNextProcessor();
+	
 }

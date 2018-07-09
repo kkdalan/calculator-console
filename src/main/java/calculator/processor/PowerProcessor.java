@@ -5,11 +5,6 @@ import util.FormulaUtil;
 
 public class PowerProcessor extends FormulaProcessor {
 
-	public PowerProcessor() {
-		FormulaProcessor formulaProcessor = FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_MULDIV);
-		this.setNextProcessor(formulaProcessor);
-	}
-	
 	@Override
 	public String init(String formula) throws Exception {
 		FormulaHelper.throwExceptionAsBrachetsOutside(formula);
@@ -31,6 +26,11 @@ public class PowerProcessor extends FormulaProcessor {
 		return getNextProcessor().computeFormula(formula);
 	}
 
+	@Override
+	public FormulaProcessor getNextProcessor() {
+		return FormulaProcessorFactory.getProcessor(FormulaProcessorFactory.TYPE_MULDIV);
+	}
+	
 	/**
 	 * simplify formula by evaluating power operation part
 	 * 
@@ -47,5 +47,7 @@ public class PowerProcessor extends FormulaProcessor {
 		}
 		return newFormula;
 	}
+
+
 
 }

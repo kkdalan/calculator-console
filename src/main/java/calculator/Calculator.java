@@ -1,7 +1,6 @@
 package calculator;
 
 import calculator.helper.FormulaHelper;
-import calculator.processor.BracketsProcessor;
 import calculator.processor.FormulaProcessor;
 import calculator.processor.FormulaProcessorFactory;
 
